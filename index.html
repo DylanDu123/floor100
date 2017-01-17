@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+            <title>
+                是男人就下100层
+            </title>
+            <link href="./css/index.css" rel="stylesheet" type="text/css">
+            </link>
+        </meta>
+    </head>
+    <body>
+        <div class="main" id="js_main" tabindex="-1">
+            <canvas height="480" id="canvas" width="320">
+            </canvas>
+            <div class="life">
+                <label id="js_life">
+                </label>
+            </div>
+            <div class="level">
+                第
+                <span id="js_level">
+                    0
+                </span>
+                层
+            </div>
+            <div class="start_flush" id="js_start_flush">
+                <a class="start_btn" href="javascript:void(0)" id="js_start_btn" onclick="Main.start()" style="display:none;">
+                </a>
+                <span id="js_start_loading" style="position:absolute;left:241px;top:417px;font-size:16px;font-weight:bolder;">
+                    加载中...
+                </span>
+            </div>
+            <div class="end_flush" id="js_end_flush">
+                <span class="icon">
+                </span>
+                <p>
+                </p>
+                <a class="replay_btn" href="javascript:void(0)" onclick="Main.replay()">
+                </a>
+            </div>
+            <script src="./js/tool.js" type="text/javascript">
+            </script>
+            <script src="./js/person.js" type="text/javascript">
+            </script>
+            <script src="./js/index.js" type="text/javascript">
+            </script>
+        </div>
+    </body>
+</html>
