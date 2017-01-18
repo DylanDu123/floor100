@@ -6,6 +6,9 @@ var Main = {
     },
     cxt: null,
     person: null,
+    blockFactory:null,
+    blocks: [],
+    time: 0,
     init: function() { //初始化
         Tool.file.imgs(["img/man.png", "img/block.png", "img/move.png", "img/thorn.png", "img/flip.png", "img/thorn_bg.png"], function(imgs) {
             Tool.getId("js_start_loading").style.display = "none";
@@ -21,6 +24,7 @@ var Main = {
         Tool.getId('js_end_flush').style.display = "none";
         Tool.getId("js_start_flush").style.display = "none";
         Main.initPerson();
+        Main.initBlock();
         Main.initEvent();
         Main.process();
     },
@@ -54,6 +58,11 @@ var Main = {
     initPerson: function() {
         Main.person = new Person(150, 0, Main.imgs[0], Main.cxt, Main.gameInfo);
     },
+    initBlock: function() {
+    	Main.blockFactory = new BlockFactory(Main.imgs[1],Main.cxt, Main.gameInfo);
+        var block = Main.blockFactory.creater(120);
+        Main.blocks.push(block);
+    },
     process: function() { //游戏运行
         var tq = new Tool.time.TimeProcess();
         tq.add(Main.draw, null, Main);
@@ -63,16 +72,32 @@ var Main = {
     },
     draw: function() {
         Main.cxt.clearRect(0, 0, Main.gameInfo.w, Main.gameInfo.h); //清除图像
-        Main.person.draw(); //绘制小人
+        Main.person.draw();
         Main.drawThornBg();
+        for (var i = 0; i < Main.blocks.length; i++) {
+            block = Main.blocks[i];
+            block.draw();
+        }
     },
     update: function() {
+        Main.time++;
+        if (Main.time >= 50) {
+        	Main.time = 0;
+            var block = Main.blockFactory.creater();
+            Main.blocks.push(block);
+        }
+        for (var i = 0; i < Main.blocks.length; i++) {
+            block = Main.blocks[i];
+            block.update();
+            Main.person.checkBlockOn(block);
+        }
+        Tool.getId("js_life").style.width = Main.person.life + "px";
         Main.person.update();
         if (Main.person.isDead) {
             Main.over();
         }
     },
-    drawThornBg: function() { //绘制荆棘（针刺）背景
+    drawThornBg: function() {
         for (var i = 0; i <= 35; i++) {
             Main.cxt.drawImage(Main.imgs[5], 0, 0, 18, 21, i * 9, 0, 9, 11);
         }
@@ -82,6 +107,9 @@ var Main = {
         Tool.getId("js_end_flush").getElementsByTagName("p")[0].innerHTML = "你牛B呀,下了<label>" + this.level + "</label>层,男人中的男人呀！";
         Tool.getId("js_end_flush").getElementsByTagName("a")[0].innerHTML = "想更男人一点";
         Tool.getId("js_end_flush").getElementsByTagName("span")[0].className = "icon happy";
+        Tool.getId("js_life").style.width = "0px";
+        Main.blocks = [];
+        this.timeQuene.stop();
     }
 };
 Main.init();
