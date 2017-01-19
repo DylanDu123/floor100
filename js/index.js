@@ -6,7 +6,7 @@ var Main = {
     },
     cxt: null,
     person: null,
-    blockFactory:null,
+    blockFactory: null,
     blocks: [],
     time: 0,
     init: function() { //初始化
@@ -59,7 +59,7 @@ var Main = {
         Main.person = new Person(150, 0, Main.imgs[0], Main.cxt, Main.gameInfo);
     },
     initBlock: function() {
-    	Main.blockFactory = new BlockFactory(Main.imgs[1],Main.cxt, Main.gameInfo);
+        Main.blockFactory = new BlockFactory(Main.imgs[1], Main.cxt, Main.gameInfo);
         var block = Main.blockFactory.creater(120);
         Main.blocks.push(block);
     },
@@ -81,14 +81,20 @@ var Main = {
     },
     update: function() {
         Main.time++;
+        console.log(Main.blocks.length)
         if (Main.time >= 50) {
-        	Main.time = 0;
+            Main.time = 0;
             var block = Main.blockFactory.creater();
             Main.blocks.push(block);
         }
         for (var i = 0; i < Main.blocks.length; i++) {
             block = Main.blocks[i];
             block.update();
+            if (block.checkMap()) {
+            	Main.blocks.splice(Main.blocks.indexOf(block),1);
+            	i--;
+            	continue;
+            }
             Main.person.checkBlockOn(block);
         }
         Tool.getId("js_life").style.width = Main.person.life + "px";
