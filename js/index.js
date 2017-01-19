@@ -59,7 +59,12 @@ var Main = {
         Main.person = new Person(150, 0, Main.imgs[0], Main.cxt, Main.gameInfo);
     },
     initBlock: function() {
-        Main.blockFactory = new BlockFactory(Main.imgs[1], Main.cxt, Main.gameInfo);
+        Main.blockFactory = new BlockFactory({
+        	block:Main.imgs[1],
+        	thorn:Main.imgs[3]
+        }
+        , Main.cxt
+        , Main.gameInfo);
         var block = Main.blockFactory.creater(120);
         Main.blocks.push(block);
     },
@@ -81,7 +86,6 @@ var Main = {
     },
     update: function() {
         Main.time++;
-        console.log(Main.blocks.length)
         if (Main.time >= 50) {
             Main.time = 0;
             var block = Main.blockFactory.creater();

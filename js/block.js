@@ -77,12 +77,30 @@ NormalBlock.prototype.ManOn = function(man){//人物在普通障碍物上
 	man.changeSpeed(0,this.yspeed);
 }
 
-var BlockFactory =  function(img,cxt,panelInfo) {
-	this.img = img;
+var BlockFactory =  function(argument,cxt,panelInfo) {
+	this.argument = argument;
 	this.cxt = cxt;
 	this.pinfo = panelInfo;
 
 }
+var ThornBlock = function(x,y,img,cxt,panelInfo){
+	BlockBase.apply(this,arguments);
+	this.lifecut = 30;
+}
+ThornBlock.prototype = new BlockBase();
+ThornBlock.prototype.initSprite = function(){//初始化普通障碍物
+
+	var sprite = new Tool.sprite.Sprite(this.img,this.cxt,1,{x:this.x,y:this.y,yspeed:this.yspeed});
+
+	sprite.add("normal",new Tool.sprite.Animation({sw:200,sh:32,width:100,height:16,dir:"down"}));
+	
+	this.sprite = sprite;
+};
+ThornBlock.prototype.ManOn = function(man){//人物在普通障碍物上
+	man.life -= this.lifecut;
+	man.changeSpeed(0,this.yspeed);
+}
+
 BlockFactory.prototype = {
 	creater:function(sx) {
 		var rnd = Math.floor(Math.random()*14);
@@ -91,7 +109,22 @@ BlockFactory.prototype = {
 
 		var x = sx?sx:rnd_x;
 		var y = 460;
-		var block = new NormalBlock(x, y, this.img, this.cxt, this.pinfo);
+		var block;
+		if (sx) {
+			block = new NormalBlock(x, y, this.argument.block, this.cxt, this.pinfo);
+			
+		}else {
+			switch(rnd) {
+				case 0:
+				case 0:
+				case 0:
+					block = new NormalBlock(x, y, this.argument.block, this.cxt, this.pinfo);
+					break;
+				default:
+					block = new ThornBlock(x, y, this.argument.thorn, this.cxt, this.pinfo);
+					break;
+			}
+		}
 		block.init();
 		return block;
 	}
