@@ -19,12 +19,14 @@ var Person = function(x, y, img, cxt, panelInfo) {
     this.isFilp = false; //是否在弹簧障碍物 上 弹起
     this.block = null; //障碍物
     this.isDead = false; //是否死亡
+    this.level = 0; 
     this.init(); //初始化
 }
 Person.prototype = {
     init: function() { //初始化
         this.initSprite();
         this.sprite.setYSpeed(this.yspeed, this.yaspeed);
+        this.level = 0;
     },
     initSprite: function() { //初始化精灵
         var sprite = new Tool.sprite.Sprite(this.img, this.cxt, 10, {
@@ -131,6 +133,7 @@ Person.prototype = {
     },
     goDown: function() { //正在向下
         //方向正常、x轴加速度为0
+        this.level += 1;
         if (this.dir == "normal") this.sprite.setXSpeed(0);
         //y轴加速度 随着y轴增量 -> 增加
         this.sprite.setYSpeed(this.yspeed, this.yaspeed);

@@ -92,6 +92,7 @@ var Main = {
             Main.person.checkBlockOn(block);
         }
         Tool.getId("js_life").style.width = Main.person.life + "px";
+        Tool.getId("js_level").innerHTML = Main.person.level;
         Main.person.update();
         if (Main.person.isDead) {
             Main.over();
@@ -104,7 +105,7 @@ var Main = {
     },
     over: function() {
         Tool.getId('js_end_flush').style.display = "block";
-        Tool.getId("js_end_flush").getElementsByTagName("p")[0].innerHTML = "你牛B呀,下了<label>" + this.level + "</label>层,男人中的男人呀！";
+        Tool.getId("js_end_flush").getElementsByTagName("p")[0].innerHTML = "你牛B呀,下了<label>" + Main.person.level + "</label>层,男人中的男人呀！";
         Tool.getId("js_end_flush").getElementsByTagName("a")[0].innerHTML = "想更男人一点";
         Tool.getId("js_end_flush").getElementsByTagName("span")[0].className = "icon happy";
         Tool.getId("js_life").style.width = "0px";
