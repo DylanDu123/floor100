@@ -112,6 +112,7 @@
 	background-color: white;
 	border: 1px solid #589300;
 	border-radius: 20px;
+    display: none;
 }
 .end_flush .icon{
 	display:inline-block;
