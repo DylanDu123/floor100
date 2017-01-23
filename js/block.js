@@ -7,8 +7,10 @@ var BaseBlock = function(x, y, img, cxt, gameInfo) {
     this.width = 100;
     this.height = 16;
     this.gameInfo = gameInfo;
-    this.width
     this.yspeed = -2;
+    this.man = null;
+    this.broken = false;
+    this.stand = false;
     this.init();
 }
 BaseBlock.prototype = {
@@ -16,10 +18,18 @@ BaseBlock.prototype = {
         this.initSpirit();
     },
     initSpirit: function() {},
-    on:function(){},
+    belowMan: function(man) {
+        if (this.stand) return;
+        this.man = man;
+        this.stand = true;
+        this.subbelowMan();
+    },
+    subbelowMan: function() {},
     updata: function() {
         this.spirit.updata();
+        this.subupdata();
     },
+    subupdata: function() {},
     draw: function() {
         this.spirit.draw();
     },
@@ -80,10 +90,40 @@ ThornBlock.prototype.initSpirit = function() {
     }));
     this.spirit = spirit;
 };
-ThornBlock.prototype.on = function(man) {
-	man.cutlife(60);
+ThornBlock.prototype.subbelowMan = function() {
+    this.man.cutlife(60);
 }
-//
+var BrokenBlock = function(x, y, img, cxt, gameInfo) {
+    this.dismisstime = 20;
+    BaseBlock.apply(this, arguments);
+}
+BrokenBlock.prototype = new BaseBlock();
+BrokenBlock.prototype.initSpirit = function() {
+    var spirit = new Tool.spirit.Spirit({
+        x: this.x,
+        y: this.y,
+        w: this.width,
+        h: this.height,
+        img: this.img,
+        cxt: this.cxt,
+        yspeed: this.yspeed,
+        gameInfo: this.gameInfo,
+        fps: 10,
+    });
+    spirit.add("normal", new Tool.spirit.Animation({
+        starty: 32,
+        sw: 200,
+        sh: 32,
+        dir: "down",
+    }));
+    this.spirit = spirit;
+};
+BrokenBlock.prototype.subupdata = function() {
+    if (this.stand) this.dismisstime--;
+    if (this.dismisstime <= 0) {
+        this.broken = true;
+    }
+};
 var BlockFactory = function(argument) {
     this.imgs = {};
     this.imgs.block = argument.block;
@@ -99,10 +139,12 @@ BlockFactory.prototype = {
         var rnd_x = Math.floor(Math.random() * 224);
         var block;
         switch (rand) {
-        	case 0:
+            case 0:
             case 1:
             case 2:
             case 3:
+                block = new BrokenBlock(rnd_x, 480, this.imgs.block, this.cxt, this.gameInfo);
+                break;
             case 4:
             case 5:
             case 6:

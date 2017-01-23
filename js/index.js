@@ -70,7 +70,7 @@ var Main = {
     },
     updata: function() {
         Main.time++;
-        if (Main.time > 50) {
+        if (Main.time > 40) {
             Main.time = 0;
             Main.blocks.push(Main.blockFactory.creat());
         }
@@ -91,13 +91,14 @@ var Main = {
         for (var i = 0; i < Main.blocks.length; i++) {
             var block = Main.blocks[i];
             if (!block) continue;
-            if (!block.checkLimit()) {
+            block.updata();
+            if (!block.checkLimit() || block.broken) {
+            	if (Main.person.block == block) Main.person.down();
                 Main.blocks.splice(Main.blocks.indexOf(block), 1);
                 block = null;
                 i--;
                 continue;
             }
-            block.updata();
             Main.person.checkBlock(block);
         }
         Tool.getID("js_level").innerHTML = Main.person.level;

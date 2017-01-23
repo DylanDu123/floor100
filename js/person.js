@@ -126,7 +126,7 @@ Person.prototype = {
             if (self_frame.x < block_Frame.r && self_frame.r > block_Frame.x) {
                 if (self_frame.b < block_Frame.b && self_frame.b > block_Frame.y) {
                     this.isjump = false;
-                    block.on(self);
+                    block.belowMan(self);
                     if (this.dir == "left" || this.dir == "right") {
                         this.changeDir(this.dir);
                     } else {
