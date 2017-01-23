@@ -24,7 +24,7 @@ var Main = {
                 block: Main.imgs[1],
                 move: Main.imgs[2],
                 flip: Main.imgs[4],
-                thorn: Main.imgs[5],
+                thorn: Main.imgs[3],
                 cxt: Main.cxt,
                 gameInfo: Main.gameInfo,
             });
@@ -38,6 +38,12 @@ var Main = {
         timeQueue.add(null, null, Main.draw);
         timeQueue.st();
         this.timeQueue = timeQueue;
+    },
+    replay: function() {
+        Tool.getID("js_end_flush").style.display = "none";
+        Main.person = new Person(150, 0, Main.imgs[0], Main.cxt, Main.gameInfo);
+        Main.blocks = [];
+        Main.start();
     },
     initEvent: function() { //初始化事件
         Tool.getID("js_main").onkeydown = function(e) {
@@ -63,11 +69,24 @@ var Main = {
         e.preventDefault();
     },
     updata: function() {
-        Main.person.updata();
         Main.time++;
-        if (Main.time > 40) {
+        if (Main.time > 50) {
             Main.time = 0;
             Main.blocks.push(Main.blockFactory.creat());
+        }
+        Main.person.updata();
+        Tool.getID("js_life").style.width = Main.person.life + "px";
+        if (Main.person.isDead) {
+            Tool.getID("js_end_flush").style.display = "block";
+            if (Main.person.level >= 100) {
+                Tool.getID("js_end_flush").getElementsByTagName("p")[0].innerHTML = "厉害啊我的哥,突破100层了";
+                Tool.getID("js_end_flush").getElementsByTagName("span")[0].className = "icon happy";
+            } else {
+                Tool.getID("js_end_flush").getElementsByTagName("p")[0].innerHTML = "你是不是傻,100层都玩不过";
+                Tool.getID("js_end_flush").getElementsByTagName("span")[0].className = "icon";
+            }
+            Main.timeQueue.stop();
+            return;
         }
         for (var i = 0; i < Main.blocks.length; i++) {
             var block = Main.blocks[i];
@@ -79,7 +98,9 @@ var Main = {
                 continue;
             }
             block.updata();
+            Main.person.checkBlock(block);
         }
+        Tool.getID("js_level").innerHTML = Main.person.level;
     },
     draw: function() {
         Main.cxt.clearRect(0, 0, Main.gameInfo.w, Main.gameInfo.h);

@@ -134,7 +134,6 @@ Tool.reg("spirit", function() {
         this.yspeedup = argument.yspeedup || 0;
         this.fps = argument.fps || 10;
         this.xspeed = argument.xspeed || 0;
-        this.xspeedup = argument.xspeedup || 0;
         this.animations = {};
         this.currentanimation = null;
         this.laze = 1000.0 / this.fps;
@@ -147,7 +146,6 @@ Tool.reg("spirit", function() {
         },
         updata: function() {
             this.x += this.xspeed;
-            this.xspeed += this.xspeedup;
             this.y += this.yspeed;
             this.yspeed += this.yspeedup;
             var t = new Date().getTime();
@@ -173,8 +171,21 @@ Tool.reg("spirit", function() {
                 x: this.x,
                 y: this.y,
                 w: this.width,
-                h: this.height
+                h: this.height,
+                r: this.x + this.width,
+                b: this.y + this.height,
             };
+        },
+        setYspeed: function(yspeed, yspeedup) {
+            this.yspeed = yspeed;
+            this.yspeedup = yspeedup;
+        },
+        setXspeed: function(xspeed) {
+            this.xspeed = xspeed;
+        },
+        move: function(x, y) {
+            this.x = x;
+            this.y = y;
         }
     };
     var exports = {
