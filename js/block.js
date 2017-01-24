@@ -8,6 +8,7 @@ var BaseBlock = function(x, y, img, cxt, gameInfo) {
     this.height = 16;
     this.gameInfo = gameInfo;
     this.yspeed = -2;
+    this.yspeedup = 0;
     this.man = null;
     this.broken = false;
     this.stand = false;
@@ -52,8 +53,6 @@ NormalBlock.prototype.initSpirit = function() {
     var spirit = new Tool.spirit.Spirit({
         x: this.x,
         y: this.y,
-        w: this.width,
-        h: this.height,
         img: this.img,
         cxt: this.cxt,
         yspeed: this.yspeed,
@@ -61,6 +60,8 @@ NormalBlock.prototype.initSpirit = function() {
         fps: 10,
     });
     spirit.add("normal", new Tool.spirit.Animation({
+        w: this.width,
+        h: this.height,
         sw: 200,
         sh: 32,
         dir: "down",
@@ -75,8 +76,6 @@ ThornBlock.prototype.initSpirit = function() {
     var spirit = new Tool.spirit.Spirit({
         x: this.x,
         y: this.y,
-        w: this.width,
-        h: this.height,
         img: this.img,
         cxt: this.cxt,
         yspeed: this.yspeed,
@@ -84,6 +83,8 @@ ThornBlock.prototype.initSpirit = function() {
         fps: 10,
     });
     spirit.add("normal", new Tool.spirit.Animation({
+        w: this.width,
+        h: this.height,
         sw: 200,
         sh: 32,
         dir: "down",
@@ -102,8 +103,6 @@ BrokenBlock.prototype.initSpirit = function() {
     var spirit = new Tool.spirit.Spirit({
         x: this.x,
         y: this.y,
-        w: this.width,
-        h: this.height,
         img: this.img,
         cxt: this.cxt,
         yspeed: this.yspeed,
@@ -112,6 +111,8 @@ BrokenBlock.prototype.initSpirit = function() {
     });
     spirit.add("normal", new Tool.spirit.Animation({
         starty: 32,
+        w: this.width,
+        h: this.height,
         sw: 200,
         sh: 32,
         dir: "down",
@@ -133,8 +134,6 @@ LeftBlock.prototype.initSpirit = function() {
     var spirit = new Tool.spirit.Spirit({
         x: this.x,
         y: this.y,
-        w: this.width,
-        h: this.height,
         img: this.img,
         cxt: this.cxt,
         yspeed: this.yspeed,
@@ -142,6 +141,8 @@ LeftBlock.prototype.initSpirit = function() {
         fps: 10,
     });
     spirit.add("normal", new Tool.spirit.Animation({
+        w: this.width,
+        h: this.height,
         fs: 2,
         sw: 200,
         sh: 32,
@@ -161,8 +162,6 @@ RightBlock.prototype.initSpirit = function() {
     var spirit = new Tool.spirit.Spirit({
         x: this.x,
         y: this.y,
-        w: this.width,
-        h: this.height,
         img: this.img,
         cxt: this.cxt,
         yspeed: this.yspeed,
@@ -170,6 +169,8 @@ RightBlock.prototype.initSpirit = function() {
         fps: 10,
     });
     spirit.add("normal", new Tool.spirit.Animation({
+        w: this.width,
+        h: this.height,
         starty: 64,
         fs: 2,
         sw: 200,
@@ -181,6 +182,66 @@ RightBlock.prototype.initSpirit = function() {
 RightBlock.prototype.subbelowMan = function() {
     this.man.setXforce(this.xforce);
 }
+var FlipBlock = function(x, y, img, cxt, gameInfo) {
+    this.standCount = 5;
+    this.standTime = 30;
+    this.dir = "normal";
+    BaseBlock.apply(this, arguments);
+}
+FlipBlock.prototype = new BaseBlock();
+FlipBlock.prototype.initSpirit = function() {
+    var spirit = new Tool.spirit.Spirit({
+        x: this.x,
+        y: this.y,
+        img: this.img,
+        cxt: this.cxt,
+        yspeed: this.yspeed,
+        gameInfo: this.gameInfo,
+        fps: 10,
+    });
+    spirit.add("normal", new Tool.spirit.Animation({
+        w: this.width,
+        h: 16,
+        sw: 200,
+        sh: 32,
+    }));
+    spirit.add("down", new Tool.spirit.Animation({
+        w: this.width,
+        h: 11,
+        starty: 32,
+        sw: 200,
+        sh: 22,
+    }));
+    spirit.add("up", new Tool.spirit.Animation({
+        w: this.width,
+        h: 21,
+        starty: 54,
+        sw: 200,
+        sh: 42,
+    }));
+    this.spirit = spirit;
+}
+FlipBlock.prototype.subbelowMan = function() {
+    this.man.up();
+    this.changeDir("down");
+    this.standCount--;
+    this.stand = (this.standCount <= 0);
+}
+FlipBlock.prototype.changeDir = function(dir) {
+    this.dir = dir;
+    var frame = this.spirit.size();
+    this.spirit.change(dir);
+    var n_frame = this.spirit.size();
+    var y = frame.b - n_frame.h;
+    this.spirit.move(frame.x, y);
+}
+FlipBlock.prototype.subupdata = function() {
+    this.standTime--;
+    if (this.dir == "down" && this.standTime <= 0) {
+        this.standTime = 30;
+        this.changeDir("up");
+    }
+};
 var BlockFactory = function(argument) {
     this.imgs = {};
     this.imgs.block = argument.block;
@@ -192,8 +253,8 @@ var BlockFactory = function(argument) {
 }
 BlockFactory.prototype = {
     creat: function(x) {
-        var rand = x?4:Math.floor(Math.random() * 16);
-        var rnd_x = x?x:Math.floor(Math.random() * 224);
+        var rand = x ? 4 : Math.floor(Math.random() * 16);
+        var rnd_x = x ? x : Math.floor(Math.random() * 224);
         var block;
         switch (rand) {
             case 0:
@@ -204,6 +265,8 @@ BlockFactory.prototype = {
                 break;
             case 4:
             case 5:
+                block = new FlipBlock(rnd_x, 480, this.imgs.flip, this.cxt, this.gameInfo);
+                break;
             case 6:
             case 7:
             case 8:

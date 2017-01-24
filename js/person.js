@@ -23,8 +23,6 @@ Person.prototype = {
         var spirit = new Tool.spirit.Spirit({
             x: this.x,
             y: this.y,
-            w: this.width,
-            h: this.height,
             img: this.img,
             cxt: this.cxt,
             gameInfo: this.gameInfo,
@@ -33,26 +31,36 @@ Person.prototype = {
             yspeedup: this.yspeedup
         });
         spirit.add("down", new Tool.spirit.Animation({
+            w: this.width,
+            h: this.height,
             startx: 64,
             sw: 64,
             sh: 64,
         }));
         spirit.add("normal", new Tool.spirit.Animation({
+            w: this.width,
+            h: this.height,
             sw: 64,
             sh: 64,
         }));
         spirit.add("up", new Tool.spirit.Animation({
+            w: this.width,
+            h: this.height,
             startx: 128,
             sw: 64,
             sh: 64,
         }));
         spirit.add("right", new Tool.spirit.Animation({
+            w: this.width,
+            h: this.height,
             startx: 320,
             sw: 64,
             sh: 64,
             fs: 2,
         }));
         spirit.add("left", new Tool.spirit.Animation({
+            w: this.width,
+            h: this.height,
             startx: 192,
             sw: 64,
             sh: 64,
@@ -79,10 +87,10 @@ Person.prototype = {
             }
         }
         if (self_frame.y < 0 || self_frame.b > this.gameInfo.h) {
-            if (this.isjump) {
-                self_y = this.gameInfo.h - this.height;
-            } else {
+            if (self_frame.y < 0) {
                 self_y = 0;
+            } else {
+                self_y = this.gameInfo.h - this.height;
             }
             this.dead();
         }
@@ -106,7 +114,7 @@ Person.prototype = {
                 }
                 break;
         }
-        var xforce = this.block?(this.block.xforce?this.block.xforce:0):0;
+        var xforce = this.block ? (this.block.xforce ? this.block.xforce : 0) : 0;
         switch (dir) {
             case "left":
                 this.spirit.setXspeed(-this.xspeed + xforce);
@@ -128,6 +136,8 @@ Person.prototype = {
                 if (self_frame.b < block_Frame.b && self_frame.b > block_Frame.y) {
                     this.isjump = false;
                     this.block = block;
+                    this.spirit.setYspeed(block.yspeed, 0);
+                    this.spirit.move(self_frame.x, block_Frame.y - self_frame.h);
                     block.belowMan(self);
                     if (this.dir == "left" || this.dir == "right") {
                         this.changeDir(this.dir);
@@ -135,9 +145,6 @@ Person.prototype = {
                         this.changeDir("normal");
                     }
                     this.level += 1;
-                    this.spirit.move(self_frame.x, block_Frame.y - self_frame.h);
-                    
-                    this.spirit.setYspeed(block.yspeed, 0);
                     return true;
                 }
             }
@@ -149,6 +156,12 @@ Person.prototype = {
         this.block = null;
         this.changeDir("down");
         this.spirit.setYspeed(this.yspeed, this.yspeedup);
+    },
+    up: function() {
+        this.isjump = true;
+        this.block = null;
+        this.changeDir("up");
+        this.spirit.setYspeed(-7, this.yspeedup);
     },
     setXforce: function(force) {
         switch (this.dir) {
@@ -162,6 +175,9 @@ Person.prototype = {
                 this.spirit.setXspeed(force);
                 break;
         }
+    },
+    setYspeed: function(yspeed) {
+        this.spirit.setYspeed(yspeed, this.yspeedup);
     },
     cutlife: function(number) {
         this.life -= number;

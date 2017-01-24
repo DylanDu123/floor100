@@ -84,6 +84,8 @@ Tool.reg("spirit", function() {
         this.sy = argument.sy || 0;
         this.sw = argument.sw || 0;
         this.sh = argument.sh || 0;
+        this.width = argument.w || 0;
+        this.height = argument.h || 0;
     }
     var Animation = function(argument) {
         this.fs = argument.fs || 1;
@@ -107,6 +109,8 @@ Tool.reg("spirit", function() {
                     sy: starty,
                     sw: argument.sw,
                     sh: argument.sh,
+                    w:argument.w,
+                    h:argument.h,
                 });
                 if (!this.currentframe) {
                     this.currentframe = frame
@@ -128,8 +132,6 @@ Tool.reg("spirit", function() {
         this.y = argument.y || 0;
         this.cxt = argument.cxt;
         this.img = argument.img;
-        this.width = argument.w;
-        this.height = argument.h;
         this.yspeed = argument.yspeed || 0;
         this.yspeedup = argument.yspeedup || 0;
         this.fps = argument.fps || 10;
@@ -157,7 +159,7 @@ Tool.reg("spirit", function() {
         },
         draw: function() {
             var frame = this.currentanimation.currentframe;
-            this.cxt.drawImage(this.img, frame.sx, frame.sy, frame.sw, frame.sh, this.x, this.y, this.width, this.height);
+            this.cxt.drawImage(this.img, frame.sx, frame.sy, frame.sw, frame.sh, this.x, this.y, frame.width, frame.height);
         },
         add: function(dir, animation) {
             this.animations[dir] = animation;
@@ -167,13 +169,14 @@ Tool.reg("spirit", function() {
             this.currentanimation = this.animations[key];
         },
         size: function() {
+            var frame = this.currentanimation.currentframe;
             return {
                 x: this.x,
                 y: this.y,
-                w: this.width,
-                h: this.height,
-                r: this.x + this.width,
-                b: this.y + this.height,
+                w: frame.width,
+                h: frame.height,
+                r: this.x + frame.width,
+                b: this.y + frame.height,
             };
         },
         setYspeed: function(yspeed, yspeedup) {
