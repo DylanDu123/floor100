@@ -106,15 +106,16 @@ Person.prototype = {
                 }
                 break;
         }
+        var xforce = this.block?(this.block.xforce?this.block.xforce:0):0;
         switch (dir) {
             case "left":
-                this.spirit.setXspeed(-this.xspeed);
+                this.spirit.setXspeed(-this.xspeed + xforce);
                 break;
             case "right":
-                this.spirit.setXspeed(this.xspeed);
+                this.spirit.setXspeed(this.xspeed + xforce);
                 break;
             default:
-                this.spirit.setXspeed(0);
+                this.spirit.setXspeed(xforce);
                 break;
         }
     },
@@ -126,6 +127,7 @@ Person.prototype = {
             if (self_frame.x < block_Frame.r && self_frame.r > block_Frame.x) {
                 if (self_frame.b < block_Frame.b && self_frame.b > block_Frame.y) {
                     this.isjump = false;
+                    this.block = block;
                     block.belowMan(self);
                     if (this.dir == "left" || this.dir == "right") {
                         this.changeDir(this.dir);
@@ -134,7 +136,7 @@ Person.prototype = {
                     }
                     this.level += 1;
                     this.spirit.move(self_frame.x, block_Frame.y - self_frame.h);
-                    this.block = block;
+                    
                     this.spirit.setYspeed(block.yspeed, 0);
                     return true;
                 }
@@ -147,6 +149,19 @@ Person.prototype = {
         this.block = null;
         this.changeDir("down");
         this.spirit.setYspeed(this.yspeed, this.yspeedup);
+    },
+    setXforce: function(force) {
+        switch (this.dir) {
+            case "left":
+                this.spirit.setXspeed(-this.xspeed + force);
+                break;
+            case "right":
+                this.spirit.setXspeed(this.xspeed + force);
+                break;
+            case "normal":
+                this.spirit.setXspeed(force);
+                break;
+        }
     },
     cutlife: function(number) {
         this.life -= number;

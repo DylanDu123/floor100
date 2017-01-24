@@ -124,6 +124,63 @@ BrokenBlock.prototype.subupdata = function() {
         this.broken = true;
     }
 };
+var LeftBlock = function(x, y, img, cxt, gameInfo) {
+    this.xforce = -2;
+    BaseBlock.apply(this, arguments);
+}
+LeftBlock.prototype = new BaseBlock();
+LeftBlock.prototype.initSpirit = function() {
+    var spirit = new Tool.spirit.Spirit({
+        x: this.x,
+        y: this.y,
+        w: this.width,
+        h: this.height,
+        img: this.img,
+        cxt: this.cxt,
+        yspeed: this.yspeed,
+        gameInfo: this.gameInfo,
+        fps: 10,
+    });
+    spirit.add("normal", new Tool.spirit.Animation({
+        fs: 2,
+        sw: 200,
+        sh: 32,
+        dir: "down",
+    }));
+    this.spirit = spirit;
+}
+LeftBlock.prototype.subbelowMan = function() {
+    this.man.setXforce(this.xforce);
+}
+var RightBlock = function(x, y, img, cxt, gameInfo) {
+    this.xforce = 2;
+    BaseBlock.apply(this, arguments);
+}
+RightBlock.prototype = new BaseBlock();
+RightBlock.prototype.initSpirit = function() {
+    var spirit = new Tool.spirit.Spirit({
+        x: this.x,
+        y: this.y,
+        w: this.width,
+        h: this.height,
+        img: this.img,
+        cxt: this.cxt,
+        yspeed: this.yspeed,
+        gameInfo: this.gameInfo,
+        fps: 10,
+    });
+    spirit.add("normal", new Tool.spirit.Animation({
+        starty: 64,
+        fs: 2,
+        sw: 200,
+        sh: 32,
+        dir: "down",
+    }));
+    this.spirit = spirit;
+}
+RightBlock.prototype.subbelowMan = function() {
+    this.man.setXforce(this.xforce);
+}
 var BlockFactory = function(argument) {
     this.imgs = {};
     this.imgs.block = argument.block;
@@ -142,9 +199,9 @@ BlockFactory.prototype = {
             case 0:
             case 1:
             case 2:
-            case 3:
                 block = new BrokenBlock(rnd_x, 480, this.imgs.block, this.cxt, this.gameInfo);
                 break;
+            case 3:
             case 4:
             case 5:
             case 6:
@@ -154,8 +211,12 @@ BlockFactory.prototype = {
                 break;
             case 9:
             case 10:
+                block = new RightBlock(rnd_x, 480, this.imgs.move, this.cxt, this.gameInfo);
+                break;
             case 11:
             case 12:
+                block = new LeftBlock(rnd_x, 480, this.imgs.move, this.cxt, this.gameInfo);
+                break;
             case 13:
             case 14:
             case 15:

@@ -95,8 +95,8 @@ Tool.reg("spirit", function() {
     }
     Animation.prototype = {
         init: function(argument) {
-            var startx = argument.startx;
-            var starty = argument.starty;
+            var startx = argument.startx || 0;
+            var starty = argument.starty || 0;
             for (var i = 0; i < this.fs; i++) {
                 if (this.dir == "left") startx += argument.sw * -1 * i;
                 if (this.dir == "right") startx += argument.sw * i;
