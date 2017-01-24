@@ -33,6 +33,7 @@ var Main = {
     },
     start: function() {
         Tool.getID("js_start_flush").style.display = "none";
+        Main.blocks.push(Main.blockFactory.creat(130));
         var timeQueue = new Tool.time.TimeProcess();
         timeQueue.add(null, null, Main.updata);
         timeQueue.add(null, null, Main.draw);
@@ -40,6 +41,7 @@ var Main = {
         this.timeQueue = timeQueue;
     },
     replay: function() {
+    	this.time = 0;
         Tool.getID("js_end_flush").style.display = "none";
         Main.person = new Person(150, 0, Main.imgs[0], Main.cxt, Main.gameInfo);
         Main.blocks = [];

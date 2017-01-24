@@ -191,33 +191,33 @@ var BlockFactory = function(argument) {
     this.gameInfo = argument.gameInfo;
 }
 BlockFactory.prototype = {
-    creat: function() {
-        var rand = Math.floor(Math.random() * 16);
-        var rnd_x = Math.floor(Math.random() * 224);
+    creat: function(x) {
+        var rand = x?4:Math.floor(Math.random() * 16);
+        var rnd_x = x?x:Math.floor(Math.random() * 224);
         var block;
         switch (rand) {
             case 0:
             case 1:
             case 2:
+            case 3:
                 block = new BrokenBlock(rnd_x, 480, this.imgs.block, this.cxt, this.gameInfo);
                 break;
-            case 3:
             case 4:
             case 5:
             case 6:
             case 7:
             case 8:
+            case 9:
                 block = new NormalBlock(rnd_x, 480, this.imgs.block, this.cxt, this.gameInfo);
                 break;
-            case 9:
             case 10:
+            case 11:
                 block = new RightBlock(rnd_x, 480, this.imgs.move, this.cxt, this.gameInfo);
                 break;
-            case 11:
             case 12:
+            case 13:
                 block = new LeftBlock(rnd_x, 480, this.imgs.move, this.cxt, this.gameInfo);
                 break;
-            case 13:
             case 14:
             case 15:
             case 16:
