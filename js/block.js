@@ -183,8 +183,7 @@ RightBlock.prototype.subbelowMan = function() {
     this.man.setXforce(this.xforce);
 }
 var FlipBlock = function(x, y, img, cxt, gameInfo) {
-    this.standCount = 5;
-    this.standTime = 30;
+    this.standCount = 4;
     this.dir = "normal";
     BaseBlock.apply(this, arguments);
 }
@@ -226,6 +225,7 @@ FlipBlock.prototype.subbelowMan = function() {
     this.changeDir("down");
     this.standCount--;
     this.stand = (this.standCount <= 0);
+    if (this.standCount <= 0) this.changeDir("normal");
 }
 FlipBlock.prototype.changeDir = function(dir) {
     this.dir = dir;
@@ -236,9 +236,8 @@ FlipBlock.prototype.changeDir = function(dir) {
     this.spirit.move(frame.x, y);
 }
 FlipBlock.prototype.subupdata = function() {
-    this.standTime--;
-    if (this.dir == "down" && this.standTime <= 0) {
-        this.standTime = 30;
+    if (this.dir == "down") {
+        this.standTime = 20;
         this.changeDir("up");
     }
 };

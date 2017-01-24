@@ -161,7 +161,7 @@ Person.prototype = {
         this.isjump = true;
         this.block = null;
         this.changeDir("up");
-        this.spirit.setYspeed(-7, this.yspeedup);
+        this.spirit.setYspeed(-6, this.yspeedup);
     },
     setXforce: function(force) {
         switch (this.dir) {
