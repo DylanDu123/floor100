@@ -1,0 +1,20 @@
+#!/usr/bin/env python                                                                    
+# -*- coding: UTF-8 -*-                                                                  
+#post-receive      
+
+import sys, os, re
+from subprocess import check_output
+
+# 检查更改
+diff = check_output(['git', 'diff', 'HEAD']).strip()
+
+# 拿到所有增加的代码 判断是否有 [amimono] 字样
+r = re.findall(r'\+ .+ \[amimono\]' ,diff, flags=re.IGNORECASE)
+if len(r):
+	print "\033[91m error: 新增加代码中有 [amimono] 字样 请使用 pod_install_framework.sh 运行后重新提交"
+	sys.exit(1)
+	pass
+
+# 判断修改的文件 
+diff = check_output(['git', 'diff', '--name-only', 'HEAD']).strip()
+print diff
